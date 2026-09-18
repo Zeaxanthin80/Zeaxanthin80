@@ -3,32 +3,118 @@
    Palette sampled directly from the robot illustrations.
    ============================================================= */
 
+/* =============================================================
+   Theme tokens
+   -------------------------------------------------------------
+   Dark is the default. The light palette comes from the same
+   illustrations, but from the warm plastic of the computer cases
+   rather than the glow of their screens — so light mode reads as
+   paper-and-beige-terminal, not as inverted CRT.
+
+   The inline script in <head> sets data-theme on <html> before
+   first paint (seeded from prefers-color-scheme, then from the
+   visitor's stored choice). With JS off you get dark.
+   ============================================================= */
+
 :root{
-  /* --- ink / surfaces (from the navy studio backgrounds) --- */
+  /* type & metrics — not themed */
+  --font-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-body:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --measure:62ch;
+  --pad-x:clamp(20px, 5vw, 64px);
+}
+
+/* ------------------------- DARK (default) ------------------------- */
+:root,
+:root[data-theme="dark"]{
+  color-scheme:dark;
+
+  /* ink / surfaces — the navy studio backgrounds */
   --ink-900:#0d1320;
   --ink-800:#111b2a;
   --ink-700:#1a283d;
   --ink-600:#21414a;
   --line:   #263650;
 
-  /* --- accents (robot eyes, CRT glow, warm plastic) --- */
-  --cyan:   #65e0ee;
-  --cyan-dim:#1983af;
+  /* accents — robot eyes, CRT glow, warm plastic */
+  --cyan:     #65e0ee;
+  --cyan-dim: #1983af;
   --cyan-pale:#b7f9fc;
-  --phosphor:#3ef08f;   /* terminal green, used only for the shell prompt + cursor */
-  --amber:  #e5b162;
-  --cream:  #e5cdb7;
+  --phosphor: #3ef08f;   /* terminal green: shell prompt + cursor only */
+  --amber:    #e5b162;
+  --amber-hi: #fdd991;
 
-  /* --- text --- */
+  /* text */
   --fg:     #cfdce9;
   --fg-mute:#8ba0b8;
   --fg-hi:  #eaf3f8;
 
-  --font-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-body:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* washes & glows */
+  --surface:      rgba(17,27,42,.62);
+  --band-alt:     rgba(26,40,61,.40);
+  --btn-bg:       rgba(26,40,61,.50);
+  --accent-wash:  rgba(25,131,175,.16);
+  --accent-glow:  rgba(101,224,238,.30);
+  --phosphor-glow:rgba(62,240,143,.45);
 
-  --measure:62ch;
-  --pad-x:clamp(20px, 5vw, 64px);
+  /* CRT overlay */
+  --scanline:        rgba(0,0,0,.22);
+  --scanline-opacity:.5;
+  --scanline-blend:  multiply;
+  --vignette:        rgba(3,7,14,.55);
+
+  /* monitor bezel around each robot */
+  --bezel-a:        #26374f;
+  --bezel-b:        #131d2c;
+  --bezel-ring:     rgba(101,224,238,.07);
+  --bezel-shadow:   rgba(0,0,0,.85);
+  --bezel-highlight:rgba(255,255,255,.05);
+  --glare-hi:       rgba(255,255,255,.10);
+  --glare-edge:     rgba(4,9,17,.50);
+  --glare-inset:    rgba(0,0,0,.40);
+}
+
+/* ---------------------------- LIGHT ---------------------------- */
+:root[data-theme="light"]{
+  color-scheme:light;
+
+  --ink-900:#f2e9dc;
+  --ink-800:#e9dcc9;
+  --ink-700:#e0d0b8;
+  --ink-600:#cbb99e;
+  --line:   #c4ad8e;
+
+  --cyan:     #0e6280;
+  --cyan-dim: #3f8299;
+  --cyan-pale:#083f53;
+  --phosphor: #186b41;
+  --amber:    #8a5a12;
+  --amber-hi: #6d4409;
+
+  --fg:     #3a3027;
+  --fg-mute:#665848;
+  --fg-hi:  #221b14;
+
+  --surface:      rgba(255,252,246,.72);
+  --band-alt:     rgba(214,196,170,.42);
+  --btn-bg:       rgba(255,255,255,.55);
+  --accent-wash:  rgba(14,98,128,.09);
+  --accent-glow:  rgba(14,98,128,.22);
+  --phosphor-glow:transparent;   /* a glow on cream just reads as blur */
+
+  --scanline:        rgba(120,95,65,.16);
+  --scanline-opacity:.42;
+  --scanline-blend:  normal;
+  --vignette:        rgba(140,112,78,.22);
+
+  --bezel-a:        #e3d3bb;
+  --bezel-b:        #c9b193;
+  --bezel-ring:     rgba(14,98,128,.10);
+  --bezel-shadow:   rgba(90,70,45,.30);
+  --bezel-highlight:rgba(255,255,255,.65);
+  --glare-hi:       rgba(255,255,255,.28);
+  --glare-edge:     rgba(90,70,45,.22);
+  --glare-inset:    rgba(90,70,45,.28);
 }
 
 *,*::before,*::after{ box-sizing:border-box; }
@@ -44,6 +130,7 @@ body{
   line-height:1.7;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
+  transition:background-color .25s ease, color .25s ease;
 }
 
 img{ max-width:100%; }
@@ -55,6 +142,15 @@ a:hover{ color:var(--cyan-pale); }
   outline:2px solid var(--cyan);
   outline-offset:3px;
   border-radius:2px;
+}
+
+.sr-only{
+  position:absolute;
+  width:1px; height:1px;
+  padding:0; margin:-1px;
+  overflow:hidden;
+  clip:rect(0 0 0 0); clip-path:inset(50%);
+  white-space:nowrap; border:0;
 }
 
 .skip-link{
@@ -76,13 +172,13 @@ a:hover{ color:var(--cyan-pale); }
   position:absolute; inset:0;
   background:repeating-linear-gradient(
     to bottom,
-    rgba(0,0,0,.22) 0px,
-    rgba(0,0,0,.22) 1px,
+    var(--scanline) 0px,
+    var(--scanline) 1px,
     transparent 1px,
     transparent 3px
   );
-  opacity:.5;
-  mix-blend-mode:multiply;
+  opacity:var(--scanline-opacity);
+  mix-blend-mode:var(--scanline-blend);
 }
 
 .crt__vignette{
@@ -90,7 +186,7 @@ a:hover{ color:var(--cyan-pale); }
   background:radial-gradient(
     ellipse 110% 85% at 50% 45%,
     transparent 45%,
-    rgba(3,7,14,.55) 100%
+    var(--vignette) 100%
   );
 }
 
@@ -122,7 +218,58 @@ a:hover{ color:var(--cyan-pale); }
 .topbar__nav a::before{ content:"/"; color:var(--line); margin-right:5px; }
 .topbar__nav a:hover{ color:var(--cyan); }
 .topbar__resume{ color:var(--amber) !important; }
-.topbar__resume:hover{ color:#fdd991 !important; }
+.topbar__resume:hover{ color:var(--amber-hi) !important; }
+
+.topbar__right{
+  display:flex;
+  align-items:center;
+  gap:clamp(14px, 3vw, 28px);
+  flex-wrap:wrap;
+}
+
+
+/* --- theme selector ------------------------------------------------
+   Two states, light and dark. The visible label names the theme that
+   is currently ON; the .sr-only "Theme:" prefix keeps that label part
+   of the accessible name, so voice control can still target it.
+   ------------------------------------------------------------------ */
+
+.theme-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  letter-spacing:.04em;
+  color:var(--fg-mute);
+  background:var(--btn-bg);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:5px 11px;
+  cursor:pointer;
+  transition:color .18s, border-color .18s, background .18s;
+}
+.theme-toggle:hover{
+  color:var(--cyan);
+  border-color:var(--cyan-dim);
+  background:var(--accent-wash);
+}
+.theme-toggle svg{
+  width:13px; height:13px;
+  display:block;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.6;
+  stroke-linecap:round;
+}
+
+/* show the glyph for the theme that is active */
+.theme-toggle .icon-sun{ display:none; }
+:root[data-theme="light"] .theme-toggle .icon-sun{ display:block; }
+:root[data-theme="light"] .theme-toggle .icon-moon{ display:none; }
+
+/* no JS => no working control, so don't advertise one */
+.no-js .theme-toggle{ display:none; }
 
 
 /* =============================================================
@@ -151,7 +298,7 @@ a:hover{ color:var(--cyan-pale); }
 .cmd__prompt{
   color:var(--phosphor);
   margin-right:.6ch;
-  text-shadow:0 0 12px rgba(62,240,143,.45);
+  text-shadow:0 0 12px var(--phosphor-glow);
 }
 
 .prose{ max-width:var(--measure); }
@@ -205,7 +352,7 @@ a:hover{ color:var(--cyan-pale); }
   margin-left:.12ch;
   vertical-align:-.12em;
   background:var(--phosphor);
-  box-shadow:0 0 14px rgba(62,240,143,.5);
+  box-shadow:0 0 14px var(--phosphor-glow);
   animation:blink 1.06s steps(1,end) infinite;
 }
 @keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0} }
@@ -225,7 +372,7 @@ a:hover{ color:var(--cyan-pale); }
   text-decoration:none;
   color:var(--fg);
   border:1px solid var(--line);
-  background:rgba(26,40,61,.5);
+  background:var(--btn-bg);
   padding:11px 20px;
   border-radius:3px;
   transition:border-color .18s, color .18s, background .18s, box-shadow .18s;
@@ -233,7 +380,7 @@ a:hover{ color:var(--cyan-pale); }
 .btn:hover{
   color:var(--cyan-pale);
   border-color:var(--cyan-dim);
-  background:rgba(25,131,175,.16);
+  background:var(--accent-wash);
 }
 .btn--primary{
   color:var(--ink-900);
@@ -245,7 +392,7 @@ a:hover{ color:var(--cyan-pale); }
   color:var(--ink-900);
   background:var(--cyan-pale);
   border-color:var(--cyan-pale);
-  box-shadow:0 0 26px rgba(101,224,238,.3);
+  box-shadow:0 0 26px var(--accent-glow);
 }
 
 
@@ -276,13 +423,13 @@ a:hover{ color:var(--cyan-pale); }
   margin:0;
   padding:var(--bezel);
 
-  background:linear-gradient(160deg, #26374f, #131d2c 60%);
+  background:linear-gradient(160deg, var(--bezel-a), var(--bezel-b) 60%);
   border:1px solid var(--line);
   border-radius:16px;
   box-shadow:
-    0 0 0 1px rgba(101,224,238,.07),
-    0 26px 60px -24px rgba(0,0,0,.85),
-    inset 0 1px 0 rgba(255,255,255,.05);
+    0 0 0 1px var(--bezel-ring),
+    0 26px 60px -24px var(--bezel-shadow),
+    inset 0 1px 0 var(--bezel-highlight);
   overflow:hidden;
 }
 
@@ -303,9 +450,9 @@ a:hover{ color:var(--cyan-pale); }
   border-radius:8px;
   pointer-events:none;
   background:
-    linear-gradient(118deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 42%),
-    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(4,9,17,.5) 100%);
-  box-shadow:inset 0 0 0 1px rgba(0,0,0,.4);
+    linear-gradient(118deg, var(--glare-hi) 0%, rgba(255,255,255,0) 42%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, var(--glare-edge) 100%);
+  box-shadow:inset 0 0 0 1px var(--glare-inset);
 }
 
 .bot-frame--hero{
@@ -318,7 +465,7 @@ a:hover{ color:var(--cyan-pale); }
   position:absolute; inset:-2px;
   border-radius:16px;
   pointer-events:none;
-  box-shadow:0 0 70px -10px rgba(101,224,238,.28);
+  box-shadow:0 0 70px -10px var(--accent-glow);
 }
 
 .bot-frame--section{
@@ -336,7 +483,7 @@ a:hover{ color:var(--cyan-pale); }
   max-width:1180px; margin-inline:auto;
 }
 .band--alt{
-  background:linear-gradient(180deg, rgba(26,40,61,0), rgba(26,40,61,.4) 12%, rgba(26,40,61,.4) 88%, rgba(26,40,61,0));
+  background:linear-gradient(180deg, transparent, var(--band-alt) 12%, var(--band-alt) 88%, transparent);
   max-width:none;
 }
 .band--alt > *{ max-width:1180px; margin-inline:auto; }
@@ -361,13 +508,13 @@ a:hover{ color:var(--cyan-pale); }
   border:1px solid var(--line);
   border-left:2px solid var(--cyan-dim);
   border-radius:4px;
-  background:rgba(17,27,42,.62);
+  background:var(--surface);
   padding:20px 24px;
   transition:border-left-color .2s, background .2s, transform .2s;
 }
 .card:hover{
   border-left-color:var(--cyan);
-  background:rgba(25,131,175,.10);
+  background:var(--accent-wash);
   transform:translateX(3px);
 }
 

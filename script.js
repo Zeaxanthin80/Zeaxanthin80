@@ -1,20 +1,83 @@
-/* Jose Marquez — personal site. Two small behaviours, no dependencies. */
+/* Jose Marquez — personal site. Three small behaviours, no dependencies. */
+
+/* =============================================================
+   Theme selector
+   -------------------------------------------------------------
+   <head> has already resolved and applied the theme before paint;
+   this only wires up the button, keeps the label honest, and
+   persists a deliberate choice.
+
+   Until the visitor actually picks a side, nothing is stored and
+   the page keeps following the OS live. The first click locks it.
+   ============================================================= */
 
 (function () {
   "use strict";
 
-  /* ---- footer year ------------------------------------------------ */
+  var KEY = "theme";
+  var root = document.documentElement;
+  var btn = document.getElementById("theme-toggle");
+  if (!btn) return;
+
+  var label = btn.querySelector(".theme-toggle__label");
+  var meta = document.querySelector('meta[name="theme-color"]');
+  var BAR = { dark: "#0d1320", light: "#f2e9dc" };   // keep in sync with --ink-900
+
+  function stored() {
+    try { return localStorage.getItem(KEY); } catch (e) { return null; }
+  }
+
+  function apply(theme, persist) {
+    root.setAttribute("data-theme", theme);
+    if (label) label.textContent = theme;
+    btn.title = "Switch to " + (theme === "dark" ? "light" : "dark") + " theme";
+    if (meta) meta.setAttribute("content", BAR[theme]);
+    if (persist) {
+      try { localStorage.setItem(KEY, theme); } catch (e) { /* private mode — fine */ }
+    }
+  }
+
+  // Sync the label with whatever <head> already decided.
+  apply(root.getAttribute("data-theme") === "light" ? "light" : "dark", false);
+
+  btn.addEventListener("click", function () {
+    apply(root.getAttribute("data-theme") === "light" ? "dark" : "light", true);
+  });
+
+  // No stored preference => keep tracking the OS if it changes mid-visit.
+  var sys = window.matchMedia("(prefers-color-scheme: light)");
+  function onSystemChange(e) {
+    if (!stored()) apply(e.matches ? "light" : "dark", false);
+  }
+  if (sys.addEventListener) sys.addEventListener("change", onSystemChange);
+  else if (sys.addListener) sys.addListener(onSystemChange);   // Safari < 14
+})();
+
+
+/* =============================================================
+   Footer year
+   ============================================================= */
+
+(function () {
+  "use strict";
   var year = document.getElementById("year");
   if (year) year.textContent = String(new Date().getFullYear());
+})();
 
-  /* ---- typewriter on the intro line -------------------------------
-     The element ships with its full text already in the DOM, so the
-     line reads correctly with JS off, with JS broken, and for
-     crawlers. We only clear and retype when motion is welcome.     */
+
+/* =============================================================
+   Typewriter on the intro line
+   -------------------------------------------------------------
+   The element ships with its full text already in the DOM, so the
+   line reads correctly with JS off, with JS broken, and for
+   crawlers. We only clear and retype when motion is welcome.
+   ============================================================= */
+
+(function () {
+  "use strict";
 
   var el = document.querySelector("[data-typewriter]");
   if (!el) return;
-
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   var text = el.dataset.typewriter || el.textContent;
