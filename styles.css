@@ -1,0 +1,463 @@
+/* =============================================================
+   Jose Marquez — personal site
+   Palette sampled directly from the robot illustrations.
+   ============================================================= */
+
+:root{
+  /* --- ink / surfaces (from the navy studio backgrounds) --- */
+  --ink-900:#0d1320;
+  --ink-800:#111b2a;
+  --ink-700:#1a283d;
+  --ink-600:#21414a;
+  --line:   #263650;
+
+  /* --- accents (robot eyes, CRT glow, warm plastic) --- */
+  --cyan:   #65e0ee;
+  --cyan-dim:#1983af;
+  --cyan-pale:#b7f9fc;
+  --phosphor:#3ef08f;   /* terminal green, used only for the shell prompt + cursor */
+  --amber:  #e5b162;
+  --cream:  #e5cdb7;
+
+  /* --- text --- */
+  --fg:     #cfdce9;
+  --fg-mute:#8ba0b8;
+  --fg-hi:  #eaf3f8;
+
+  --font-mono:"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-body:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --measure:62ch;
+  --pad-x:clamp(20px, 5vw, 64px);
+}
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; }
+
+body{
+  margin:0;
+  background:var(--ink-900);
+  color:var(--fg);
+  font-family:var(--font-body);
+  font-size:clamp(16px, 0.95rem + 0.2vw, 18px);
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img{ max-width:100%; }
+
+a{ color:var(--cyan); text-underline-offset:3px; text-decoration-thickness:1px; }
+a:hover{ color:var(--cyan-pale); }
+
+:focus-visible{
+  outline:2px solid var(--cyan);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+.skip-link{
+  position:absolute; left:-9999px; top:0;
+  background:var(--cyan); color:var(--ink-900);
+  padding:10px 16px; font-family:var(--font-mono); z-index:100;
+}
+.skip-link:focus{ left:12px; top:12px; }
+
+
+/* =============================================================
+   CRT treatment — scanlines + vignette (accent: base look)
+   Fixed to the viewport, never intercepts pointer events.
+   ============================================================= */
+
+.crt{ position:fixed; inset:0; pointer-events:none; z-index:50; }
+
+.crt__scanlines{
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,.22) 0px,
+    rgba(0,0,0,.22) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity:.5;
+  mix-blend-mode:multiply;
+}
+
+.crt__vignette{
+  position:absolute; inset:0;
+  background:radial-gradient(
+    ellipse 110% 85% at 50% 45%,
+    transparent 45%,
+    rgba(3,7,14,.55) 100%
+  );
+}
+
+
+/* =============================================================
+   Top bar
+   ============================================================= */
+
+.topbar{
+  position:relative; z-index:2;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:24px;
+  padding:22px var(--pad-x);
+  font-family:var(--font-mono);
+  font-size:.82rem;
+  letter-spacing:.04em;
+}
+
+.topbar__mark{
+  color:var(--cyan);
+  font-weight:700;
+  border:1px solid var(--line);
+  padding:4px 9px;
+  border-radius:3px;
+}
+
+.topbar__nav{ display:flex; gap:clamp(14px, 3vw, 28px); flex-wrap:wrap; }
+.topbar__nav a{ color:var(--fg-mute); text-decoration:none; }
+.topbar__nav a::before{ content:"/"; color:var(--line); margin-right:5px; }
+.topbar__nav a:hover{ color:var(--cyan); }
+.topbar__resume{ color:var(--amber) !important; }
+.topbar__resume:hover{ color:#fdd991 !important; }
+
+
+/* =============================================================
+   Shared section furniture
+   ============================================================= */
+
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:.8rem;
+  letter-spacing:.08em;
+  color:var(--fg-mute);
+  margin:0 0 18px;
+}
+
+/* Accent 2: section headings as shell commands */
+.cmd{
+  font-family:var(--font-mono);
+  font-size:clamp(1.05rem, 0.9rem + 0.9vw, 1.5rem);
+  font-weight:500;
+  letter-spacing:.02em;
+  color:var(--fg-hi);
+  margin:0 0 clamp(28px, 4vw, 46px);
+  padding-bottom:16px;
+  border-bottom:1px solid var(--line);
+}
+.cmd__prompt{
+  color:var(--phosphor);
+  margin-right:.6ch;
+  text-shadow:0 0 12px rgba(62,240,143,.45);
+}
+
+.prose{ max-width:var(--measure); }
+.prose p{ margin:0 0 1.1em; }
+.prose p:last-child{ margin-bottom:0; }
+
+.tags{
+  display:flex; flex-wrap:wrap; gap:8px;
+  list-style:none; margin:26px 0 0; padding:0;
+  font-family:var(--font-mono); font-size:.75rem; letter-spacing:.04em;
+}
+.tags li{
+  border:1px solid var(--line);
+  color:var(--fg-mute);
+  padding:3px 10px;
+  border-radius:99px;
+}
+.tags--sm{ margin-top:16px; }
+
+
+/* =============================================================
+   Hero
+   ============================================================= */
+
+.hero{
+  position:relative; z-index:2;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:clamp(32px, 6vw, 72px);
+  padding:clamp(28px, 5vw, 72px) var(--pad-x) clamp(48px, 6vw, 88px);
+  max-width:1180px; margin-inline:auto;
+}
+
+.hero__title{
+  font-family:var(--font-mono);
+  font-size:clamp(2rem, 1.2rem + 3.6vw, 3.6rem);
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:-.01em;
+  color:var(--fg-hi);
+  margin:0 0 22px;
+  /* reserve the line so the typewriter doesn't reflow the page */
+  min-height:1.1em;
+}
+
+/* Accent 1: blinking block cursor */
+.cursor{
+  display:inline-block;
+  width:.56ch; height:1em;
+  margin-left:.12ch;
+  vertical-align:-.12em;
+  background:var(--phosphor);
+  box-shadow:0 0 14px rgba(62,240,143,.5);
+  animation:blink 1.06s steps(1,end) infinite;
+}
+@keyframes blink{ 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+.hero__lede{
+  max-width:46ch;
+  font-size:1.06rem;
+  color:var(--fg);
+  margin:0 0 34px;
+}
+
+.hero__actions{ display:flex; flex-wrap:wrap; gap:12px; }
+
+.btn{
+  font-family:var(--font-mono);
+  font-size:.83rem; letter-spacing:.04em;
+  text-decoration:none;
+  color:var(--fg);
+  border:1px solid var(--line);
+  background:rgba(26,40,61,.5);
+  padding:11px 20px;
+  border-radius:3px;
+  transition:border-color .18s, color .18s, background .18s, box-shadow .18s;
+}
+.btn:hover{
+  color:var(--cyan-pale);
+  border-color:var(--cyan-dim);
+  background:rgba(25,131,175,.16);
+}
+.btn--primary{
+  color:var(--ink-900);
+  background:var(--cyan);
+  border-color:var(--cyan);
+  font-weight:700;
+}
+.btn--primary:hover{
+  color:var(--ink-900);
+  background:var(--cyan-pale);
+  border-color:var(--cyan-pale);
+  box-shadow:0 0 26px rgba(101,224,238,.3);
+}
+
+
+/* =============================================================
+   BOT FRAME — the swap contract
+   -------------------------------------------------------------
+   Each hero robot lives in a fixed-size .bot-frame. The only
+   child that matters is .bot-frame__media, which fills the box
+   completely. To go from still to loop, replace the <img> with:
+
+     <video class="bot-frame__media" autoplay muted loop playsinline
+            poster="assets/robots/<name>.jpg">
+       <source src="assets/robots/<name>.webm" type="video/webm">
+       <source src="assets/robots/<name>.mp4"  type="video/mp4">
+     </video>
+
+   Nothing outside the figure needs to change.
+   ============================================================= */
+
+.bot-frame{
+  --bot-size:320px;
+  --bezel:10px;
+
+  position:relative;
+  flex:none;
+  inline-size:var(--bot-size);
+  block-size:var(--bot-size);
+  margin:0;
+  padding:var(--bezel);
+
+  background:linear-gradient(160deg, #26374f, #131d2c 60%);
+  border:1px solid var(--line);
+  border-radius:16px;
+  box-shadow:
+    0 0 0 1px rgba(101,224,238,.07),
+    0 26px 60px -24px rgba(0,0,0,.85),
+    inset 0 1px 0 rgba(255,255,255,.05);
+  overflow:hidden;
+}
+
+/* img and video are styled identically — that's the whole point */
+.bot-frame__media{
+  display:block;
+  inline-size:100%;
+  block-size:100%;
+  object-fit:cover;
+  border-radius:8px;
+  background:var(--ink-800);
+}
+
+/* soft screen curvature + a diagonal glass glare, drawn over the media */
+.bot-frame__glare{
+  position:absolute;
+  inset:var(--bezel);
+  border-radius:8px;
+  pointer-events:none;
+  background:
+    linear-gradient(118deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 42%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, rgba(4,9,17,.5) 100%);
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.4);
+}
+
+.bot-frame--hero{
+  --bot-size:clamp(250px, 38vw, 440px);
+  --bezel:12px;
+}
+.bot-frame--hero::after{
+  /* cyan bloom behind the hero frame */
+  content:"";
+  position:absolute; inset:-2px;
+  border-radius:16px;
+  pointer-events:none;
+  box-shadow:0 0 70px -10px rgba(101,224,238,.28);
+}
+
+.bot-frame--section{
+  --bot-size:clamp(220px, 26vw, 300px);
+}
+
+
+/* =============================================================
+   Bands (about / projects / contact)
+   ============================================================= */
+
+.band{
+  position:relative; z-index:2;
+  padding:clamp(48px, 6vw, 80px) var(--pad-x);
+  max-width:1180px; margin-inline:auto;
+}
+.band--alt{
+  background:linear-gradient(180deg, rgba(26,40,61,0), rgba(26,40,61,.4) 12%, rgba(26,40,61,.4) 88%, rgba(26,40,61,0));
+  max-width:none;
+}
+.band--alt > *{ max-width:1180px; margin-inline:auto; }
+
+.band__grid{
+  display:flex;
+  align-items:flex-start;
+  gap:clamp(30px, 5vw, 60px);
+}
+.band__grid--flip{ flex-direction:row-reverse; }
+
+
+/* --- project cards --- */
+
+.cards{
+  list-style:none; margin:0; padding:0;
+  display:grid; gap:14px;
+  flex:1 1 auto; min-width:0;
+}
+
+.card{
+  border:1px solid var(--line);
+  border-left:2px solid var(--cyan-dim);
+  border-radius:4px;
+  background:rgba(17,27,42,.62);
+  padding:20px 24px;
+  transition:border-left-color .2s, background .2s, transform .2s;
+}
+.card:hover{
+  border-left-color:var(--cyan);
+  background:rgba(25,131,175,.10);
+  transform:translateX(3px);
+}
+
+.card__title{
+  font-family:var(--font-mono);
+  font-size:1rem; font-weight:500; letter-spacing:.02em;
+  margin:0 0 8px;
+}
+.card__title a{ text-decoration:none; }
+.card__title a::before{ content:"› "; color:var(--fg-mute); }
+
+.card__body{ margin:0; font-size:.95rem; color:var(--fg-mute); max-width:54ch; }
+
+
+/* --- contact list --- */
+
+.contact-list{
+  list-style:none; margin:28px 0 0; padding:0;
+  font-family:var(--font-mono); font-size:.9rem;
+}
+.contact-list li{
+  display:flex; gap:14px; align-items:baseline;
+  padding:9px 0;
+  border-bottom:1px dashed var(--line);
+}
+.contact-list__key{
+  color:var(--fg-mute);
+  min-width:9ch;
+  font-size:.78rem;
+  letter-spacing:.06em;
+}
+
+
+/* =============================================================
+   Footer
+   ============================================================= */
+
+.footer{
+  position:relative; z-index:2;
+  padding:40px var(--pad-x) 56px;
+  border-top:1px solid var(--line);
+}
+.footer p{
+  margin:0;
+  font-family:var(--font-mono);
+  font-size:.76rem;
+  letter-spacing:.04em;
+  color:var(--fg-mute);
+  text-align:center;
+}
+
+
+/* =============================================================
+   Responsive
+   ============================================================= */
+
+@media (max-width: 860px){
+  .hero{
+    grid-template-columns:1fr;
+    justify-items:start;
+    padding-top:12px;
+  }
+  .hero__copy{ order:2; }
+  .bot-frame--hero{ order:1; --bot-size:min(78vw, 340px); }
+
+  .band__grid,
+  .band__grid--flip{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  .bot-frame--section{ --bot-size:min(72vw, 300px); }
+}
+
+@media (max-width: 520px){
+  .topbar{ flex-direction:column; align-items:flex-start; gap:14px; }
+  .contact-list li{ flex-direction:column; gap:2px; }
+}
+
+
+/* =============================================================
+   Reduced motion — kill the blink, the transitions, the scroll.
+   The typewriter is disabled in JS via the same media query.
+   ============================================================= */
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  .cursor{ animation:none; opacity:1; }
+  *,*::before,*::after{
+    transition-duration:.01ms !important;
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+  }
+}

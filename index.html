@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Jose Marquez</title>
+<meta name="description" content="Personal site of Jose Marquez — software, data, and small machines that blink." />
+<meta name="theme-color" content="#0d1320" />
+<link rel="icon" href="assets/favicon.png" type="image/png" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Jose Marquez" />
+<meta property="og:description" content="Personal site of Jose Marquez — software, data, and small machines that blink." />
+<meta property="og:image" content="assets/robots/hero-terminal.jpg" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- CRT treatment: scanlines + vignette. Purely decorative, never interactive. -->
+<div class="crt" aria-hidden="true">
+  <div class="crt__scanlines"></div>
+  <div class="crt__vignette"></div>
+</div>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <span class="topbar__mark">JM</span>
+  <nav class="topbar__nav" aria-label="Sections">
+    <a href="#about">about</a>
+    <a href="#projects">projects</a>
+    <a href="#contact">contact</a>
+    <!-- EDIT: point this at your real resume file or URL -->
+    <a href="assets/resume.pdf" class="topbar__resume">resume</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero" id="top">
+    <div class="hero__copy">
+      <p class="eyebrow">// personal site</p>
+
+      <h1 class="hero__title">
+        <!-- Typewriter target. JS fills this; the noscript/no-motion fallback is the text itself. -->
+        <span class="typewriter" data-typewriter="Hi, I&apos;m Jose">Hi, I&apos;m Jose</span><span class="cursor" aria-hidden="true"></span>
+      </h1>
+
+      <!-- EDIT: your one-line positioning statement -->
+      <p class="hero__lede">
+        I build small, careful software — data plumbing, internal tools,
+        and the occasional thing that talks back.
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" href="assets/resume.pdf">Resume</a>
+        <a class="btn" href="https://github.com/Zeaxanthin80">GitHub</a>
+        <a class="btn" href="#contact">Contact</a>
+      </div>
+    </div>
+
+    <!-- HERO ROBOT 1 of 4 -->
+    <figure class="bot-frame bot-frame--hero" data-bot="hero">
+      <img class="bot-frame__media"
+           src="assets/robots/hero-terminal.jpg"
+           width="1024" height="1024"
+           alt="A small white robot in a blue bow tie seated at a vintage computer with a green phosphor terminal." />
+      <span class="bot-frame__glare" aria-hidden="true"></span>
+    </figure>
+  </section>
+
+  <!-- ============================ ABOUT ============================ -->
+  <section class="band" id="about">
+    <h2 class="cmd"><span class="cmd__prompt">$</span> whoami</h2>
+
+    <div class="band__grid">
+      <!-- HERO ROBOT 2 of 4 -->
+      <figure class="bot-frame bot-frame--section" data-bot="about">
+        <img class="bot-frame__media"
+             src="assets/robots/about-console.jpg"
+             width="800" height="800" loading="lazy" decoding="async"
+             alt="A rounded white robot standing beside a beige desktop computer on a deep blue background." />
+        <span class="bot-frame__glare" aria-hidden="true"></span>
+      </figure>
+
+      <!-- EDIT: replace with your actual bio -->
+      <div class="prose">
+        <p>
+          I&rsquo;m a developer based in Miami. Most of my work lives where messy data
+          meets people who need a straight answer from it — pipelines, dashboards,
+          and the small internal tools nobody writes a press release about.
+        </p>
+        <p>
+          Before software I spent years in a field that taught me to read a system
+          before touching it. That habit stuck. I like problems that reward patience,
+          codebases that stay boring, and interfaces that get out of the way.
+        </p>
+        <p>
+          Currently sharpening: distributed systems, Python at scale, and the long
+          tail of making things actually deploy.
+        </p>
+        <ul class="tags">
+          <li>Python</li><li>SQL</li><li>JavaScript</li><li>AWS</li><li>Linux</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ PROJECTS ============================ -->
+  <section class="band band--alt" id="projects">
+    <h2 class="cmd"><span class="cmd__prompt">$</span> ls ~/projects</h2>
+
+    <div class="band__grid band__grid--flip">
+      <!-- HERO ROBOT 3 of 4 -->
+      <figure class="bot-frame bot-frame--section" data-bot="projects">
+        <img class="bot-frame__media"
+             src="assets/robots/projects-crt.jpg"
+             width="800" height="800" loading="lazy" decoding="async"
+             alt="A robot whose face is a green CRT screen, sitting behind a keyboard on a cyan background." />
+        <span class="bot-frame__glare" aria-hidden="true"></span>
+      </figure>
+
+      <!-- EDIT: replace all three cards with real projects -->
+      <ul class="cards">
+        <li class="card">
+          <h3 class="card__title"><a href="#">project-one</a></h3>
+          <p class="card__body">
+            One sentence on what it does and who it was for. Lead with the outcome,
+            not the stack.
+          </p>
+          <ul class="tags tags--sm"><li>Python</li><li>Postgres</li></ul>
+        </li>
+        <li class="card">
+          <h3 class="card__title"><a href="#">project-two</a></h3>
+          <p class="card__body">
+            One sentence on what it does and who it was for. Lead with the outcome,
+            not the stack.
+          </p>
+          <ul class="tags tags--sm"><li>JavaScript</li><li>D3</li></ul>
+        </li>
+        <li class="card">
+          <h3 class="card__title"><a href="#">project-three</a></h3>
+          <p class="card__body">
+            One sentence on what it does and who it was for. Lead with the outcome,
+            not the stack.
+          </p>
+          <ul class="tags tags--sm"><li>AWS</li><li>Terraform</li></ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================ CONTACT ============================ -->
+  <section class="band" id="contact">
+    <h2 class="cmd"><span class="cmd__prompt">$</span> contact --email</h2>
+
+    <div class="band__grid">
+      <!-- HERO ROBOT 4 of 4 -->
+      <figure class="bot-frame bot-frame--section" data-bot="contact">
+        <img class="bot-frame__media"
+             src="assets/robots/contact-amber.jpg"
+             width="800" height="800" loading="lazy" decoding="async"
+             alt="A robot at a colour monitor, lit warm amber." />
+        <span class="bot-frame__glare" aria-hidden="true"></span>
+      </figure>
+
+      <div class="prose">
+        <p>
+          Open to interesting work and easy to reach. Email is best; I read
+          everything and answer most of it.
+        </p>
+        <!-- EDIT: swap in the address you actually want published -->
+        <ul class="contact-list">
+          <li><span class="contact-list__key">email</span><a href="mailto:you@example.com">you@example.com</a></li>
+          <li><span class="contact-list__key">github</span><a href="https://github.com/Zeaxanthin80">@Zeaxanthin80</a></li>
+          <li><span class="contact-list__key">linkedin</span><a href="#">in/your-handle</a></li>
+          <li><span class="contact-list__key">resume</span><a href="assets/resume.pdf">resume.pdf</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <p>&copy; <span id="year">2026</span> Jose Marquez &middot; built by hand, no frameworks</p>
+</footer>
+
+<script src="script.js" defer></script>
+</body>
+</html>
